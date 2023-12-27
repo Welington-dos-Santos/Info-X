@@ -8,7 +8,7 @@ package br.com.infox.telas;
 /**
  *
  * @author cti4
- * 
+ *
  */
 import java.sql.*;
 import br.com.infox.dal.ModuloConexao;
@@ -20,7 +20,6 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
     PreparedStatement pst = null;
     ResultSet rs = null;
 
-    
     /**
      * Creates new form TelaUsuario
      */
@@ -29,11 +28,12 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         conexao = ModuloConexao.conector();
     }
 //metodo para consultar usuários
-    private void consultar(){
-        String sql ="select * from tbusuarios where IDUSER = ?";
+
+    private void consultar() {
+        String sql = "select * from tbusuarios where IDUSER = ?";
         try {
-            pst=conexao.prepareStatement(sql);
-            pst.setString(1,TextId.getText());
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, TextId.getText());
             rs = pst.executeQuery();
             if (rs.next()) {
                 TextNome.setText(rs.getString(2));
@@ -43,49 +43,55 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                 //a linha abaixo se refere ao combobox
                 BoxPerm.setSelectedItem(rs.getString(6));
             } else {
-               JOptionPane.showMessageDialog(null, "Usuário não cadastrado"); 
-               //as linhas abaixo "limpam" os campos
-               TextNome.setText(null);
-               TextFone.setText(null);
-               TextLogin.setText(null);
-               TextSenha.setText(null);
-               BoxPerm.setSelectedItem(null);
+                JOptionPane.showMessageDialog(null, "Usuário não cadastrado");
+                //as linhas abaixo "limpam" os campos
+                TextNome.setText(null);
+                TextFone.setText(null);
+                TextLogin.setText(null);
+                TextSenha.setText(null);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
+
     //método para adicionar usuários
-    private void adicionar(){
+    private void adicionar() {
         String sql = "insert into tbusuarios(IDUSER,USUARIO,FONE,LOGIN,SENHA,perfil) values(?,?,?,?,?,?)";
         try {
-            pst=conexao.prepareStatement(sql);
+            pst = conexao.prepareStatement(sql);
             pst.setString(1, TextId.getText());
             pst.setString(2, TextNome.getText());
             pst.setString(3, TextFone.getText());
             pst.setString(4, TextLogin.getText());
             pst.setString(5, TextSenha.getText());
             pst.setString(6, BoxPerm.getSelectedItem().toString());
-            //a linha abaixo atualiza a tabela usuários com os dados do formulário
-            //a estrutura abaixo é usada para confirmar a inserção dos dados na tabela
-            int adicionado = pst.executeUpdate();
-            //a linha abaixo serve de apoio ao entendimento da lógica
-            //System.out.eprintln(adicionado);
-                if (adicionado >0){
+
+            if ((TextId.getText().isEmpty())
+                    || (TextNome.getText().isEmpty())
+                    || (TextLogin.getText().isEmpty())
+                    || (TextSenha.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Preencha todos os Campos Obrigatórios");
+            } else {
+                //a linha abaixo atualiza a tabela usuários com os dados do formulário
+                //a estrutura abaixo é usada para confirmar a inserção dos dados na tabela
+                int adicionado = pst.executeUpdate();
+                //a linha abaixo serve de apoio ao entendimento da lógica
+                //System.out.eprintln(adicionado);
+                if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Usuário adicionado com sucesso!");
                     TextId.setText(null);
                     TextNome.setText(null);
                     TextFone.setText(null);
                     TextLogin.setText(null);
                     TextSenha.setText(null);
-                    BoxPerm.setSelectedItem(null);
                 }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, e);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
         }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -153,7 +159,12 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
             }
         });
 
-        BoxPerm.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "admin", "User" }));
+        BoxPerm.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Admin", "User" }));
+        BoxPerm.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentHidden(java.awt.event.ComponentEvent evt) {
+                BoxPermComponentHidden(evt);
+            }
+        });
         BoxPerm.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BoxPermActionPerformed(evt);
@@ -304,6 +315,10 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
     private void TextSenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TextSenhaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_TextSenhaActionPerformed
+
+    private void BoxPermComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_BoxPermComponentHidden
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BoxPermComponentHidden
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
