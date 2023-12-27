@@ -27,8 +27,8 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         initComponents();
         conexao = ModuloConexao.conector();
     }
-//metodo para consultar usuários
 
+    //metodo para consultar usuários
     private void consultar() {
         String sql = "select * from tbusuarios where IDUSER = ?";
         try {
@@ -128,6 +128,33 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
+    }
+
+    //criando o método para deletar o usuário:
+    private void remover() {
+        //a estrutura abaixo confirma a remoção do usuário
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover este usuário", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            String sql = "delete from tbusuarios where iduser=?";
+            
+            try {
+                pst=conexao.prepareStatement(sql);
+                pst.setString(1, TextId.getText());
+                int apagado = pst.executeUpdate();
+                
+                if(apagado>0){
+                    JOptionPane.showMessageDialog(null, "Usuário removido com sucesso!");
+                    TextId.setText(null);
+                    TextNome.setText(null);
+                    TextFone.setText(null);
+                    TextLogin.setText(null);
+                    TextSenha.setText(null);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+        }
+
     }
 
     /**
@@ -247,6 +274,11 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         btnUsuDelete.setToolTipText("Remover");
         btnUsuDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnUsuDelete.setPreferredSize(new java.awt.Dimension(80, 80));
+        btnUsuDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuDeleteActionPerformed(evt);
+            }
+        });
 
         jLabel7.setText("* Campos Obrigatórios");
 
@@ -364,9 +396,14 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_BoxPermComponentHidden
 
     private void BtnUsuUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnUsuUpdateActionPerformed
-        //Chamando o método alterar;
+        //Chamando o método alterar:
         alterar();
     }//GEN-LAST:event_BtnUsuUpdateActionPerformed
+
+    private void btnUsuDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuDeleteActionPerformed
+        //Chamando o método remover:
+        remover();
+    }//GEN-LAST:event_btnUsuDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
