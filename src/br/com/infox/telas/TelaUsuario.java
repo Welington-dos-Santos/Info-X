@@ -133,7 +133,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
     //criando o método para deletar o usuário:
     private void remover() {
         //a estrutura abaixo confirma a remoção do usuário
-        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover este usuário", "Atenção", JOptionPane.YES_NO_OPTION);
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover este usuário?", "Atenção!", JOptionPane.YES_NO_OPTION);
         if (confirma == JOptionPane.YES_OPTION) {
             String sql = "delete from tbusuarios where iduser=?";
             
