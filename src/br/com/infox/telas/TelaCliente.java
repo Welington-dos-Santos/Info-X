@@ -8,6 +8,7 @@ package br.com.infox.telas;
 import java.sql.*;
 import br.com.infox.dal.ModuloConexao;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
 
 /**
@@ -49,10 +50,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
                 //System.out.eprintln(adicionado);
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Cliente adicionado com sucesso!");
-                    cliNome.setText(null);
-                    cliEnd.setText(null);
-                    cliFone.setText(null);
-                    cliEmail.setText(null);
+                    limpar();
                 }
             }
         } catch (Exception e) {
@@ -62,7 +60,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
     //Método para pesquisar clientes:
     private void pesquisarCli() {
-        String sql = "select * from tbclientes where nomecli like ?";
+        String sql = "select idcli as id, nomecli as nome, endcli as endereço, fonecli as fone, emailcli as email from tbclientes where nomecli like ?";
         try {
             pst = conexao.prepareStatement(sql);
             pst.setString(1, pesquisaCli.getText() + "%");
@@ -76,6 +74,17 @@ public class TelaCliente extends javax.swing.JInternalFrame {
         }
     }
 
+    //Método para limpar os campos preenchidos
+    private void limpar() {
+        pesquisaCli.setText(null);
+        cliId.setText(null);
+        cliNome.setText(null);
+        cliEnd.setText(null);
+        cliFone.setText(null);
+        cliEmail.setText(null);
+        ((DefaultTableModel) tblClientes.getModel()).setRowCount(0);
+    }
+
     //Método para setar os campos do formulário com o conteúdo da tabela:
     private void setar_campos() {
         int setar = tblClientes.getSelectedRow();
@@ -84,7 +93,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
         cliEnd.setText(tblClientes.getModel().getValueAt(setar, 2).toString());
         cliFone.setText(tblClientes.getModel().getValueAt(setar, 3).toString());
         cliEmail.setText(tblClientes.getModel().getValueAt(setar, 4).toString());
-        
+
         //a linha abaixo desabilita o botão adicionar:
         btnAdicionar.setEnabled(false);
     }
@@ -113,11 +122,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
                 //System.out.eprintln(adicionado);
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Dados do Cliente alterados com sucesso!");
-                    cliNome.setText(null);
-                    cliEnd.setText(null);
-                    cliFone.setText(null);
-                    cliEmail.setText(null);
-                    cliId.setText(null);
+                    limpar();
                     btnAdicionar.setEnabled(true);
                 }
             }
@@ -140,11 +145,8 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
                 if (apagado > 0) {
                     JOptionPane.showMessageDialog(null, "Cliente removido com sucesso!");
-                    cliId.setText(null);
-                    cliNome.setText(null);
-                    cliEnd.setText(null);
-                    cliFone.setText(null);
-                    cliEmail.setText(null);
+                    limpar();
+                    btnAdicionar.setEnabled(true);
                 }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e);
@@ -182,7 +184,6 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setForeground(java.awt.Color.black);
-        setIconifiable(true);
         setMaximizable(true);
         setTitle("Cliente");
         setMinimumSize(new java.awt.Dimension(124, 34));
@@ -244,17 +245,24 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
         jLabel6.setIcon(new javax.swing.ImageIcon("C:\\Users\\cti4\\Documents\\NetBeansProjects\\prjinfoX\\Info-X\\src\\br\\com\\infox\\icones\\search.png")); // NOI18N
 
+        tblClientes = new javax.swing.JTable(){
+            public boolean isCellEditable(int rowIndex, int colIndex){
+                return false;
+            }
+        };
         tblClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "NOME", "ENDEREÇO", "FONE", "EMAIL"
             }
         ));
+        tblClientes.setFocusable(false);
+        tblClientes.getTableHeader().setReorderingAllowed(false);
         tblClientes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblClientesMouseClicked(evt);
